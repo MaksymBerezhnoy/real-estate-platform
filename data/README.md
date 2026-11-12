@@ -187,3 +187,25 @@ available under the [Open Database License (ODbL) 1.0](https://opendatacommons.o
 The files in `data/osm/` are a derived database distributed under the ODbL, not under the GPL
 that covers the code of this repository. Any public map or page built from them must credit
 "© OpenStreetMap contributors".
+
+## Fonts
+
+The theme serves its two typefaces from its own folder,
+[web/app/themes/mb-real-estate-theme/assets/fonts/](../web/app/themes/mb-real-estate-theme/assets/fonts/),
+and registers them through `fontFace` in `theme.json`. Pages make no requests to Google Fonts.
+
+| Typeface | Use | Files | Source | License |
+| --- | --- | --- | --- | --- |
+| Inter | Body text | `inter/inter-{latin,cyrillic,cyrillic-ext}.woff2` | [Google Fonts](https://fonts.google.com/specimen/Inter), upstream [rsms/inter](https://github.com/rsms/inter) | [SIL OFL 1.1](../web/app/themes/mb-real-estate-theme/assets/fonts/inter/OFL.txt) |
+| Manrope | Headings and prices | `manrope/manrope-{latin,cyrillic,cyrillic-ext}.woff2` | [Google Fonts](https://fonts.google.com/specimen/Manrope), upstream [googlefonts/manrope](https://github.com/googlefonts/manrope) | [SIL OFL 1.1](../web/app/themes/mb-real-estate-theme/assets/fonts/manrope/OFL.txt) |
+
+Each file is a variable font (Inter weights 100-900, Manrope 200-800) cut by Google Fonts to one
+Unicode subset. Only three subsets are kept: `latin` and `cyrillic` cover English and Ukrainian,
+`cyrillic-ext` carries the hryvnia sign `₴`. Every `fontFace` entry declares the subset's
+`unicodeRange`, so a browser downloads a file only when the page contains a character from it.
+The six files take 134 KB in total. The `OFL.txt` license texts were taken from the
+[google/fonts](https://github.com/google/fonts) repository and sit next to the files.
+
+The files were downloaded on 2026-11-12 from `fonts.gstatic.com` (Inter v20, Manrope v23), the
+URLs that the Google Fonts CSS API returns for `Inter:wght@100..900` and `Manrope:wght@200..800`.
+Italics are not included: the prototype does not use them.
