@@ -187,3 +187,92 @@ available under the [Open Database License (ODbL) 1.0](https://opendatacommons.o
 The files in `data/osm/` are a derived database distributed under the ODbL, not under the GPL
 that covers the code of this repository. Any public map or page built from them must credit
 "© OpenStreetMap contributors".
+
+## Property descriptions
+
+[descriptions/descriptions.json](descriptions/descriptions.json) holds 350 descriptions of
+fictional properties for sale, each in Ukrainian and English: 230 apartments and 120 houses. The
+generator picks a text for every property by its tags, so full-text search runs over hundreds of
+different texts instead of a handful of templates.
+
+**The texts were written by a language model (Claude) for this repository and proofread
+selectively, not record by record. They are not taken from real listings, and every property in
+them is fictional.** The same note is in the `metadata.generated_note` field of the file.
+
+The texts never state what the generator decides itself: price, exact area, floor number,
+address, district or agency. A text names the room count only when its `rooms` tag allows exactly
+that number. They contain no digits at all, no street,
+district or metro names, no real residential complexes, developers, agencies or people, and no
+phones or links. Location is described only in neutral terms such as "metro and a park nearby".
+
+### Format
+
+The file is a JSON object with a `metadata` block and a `descriptions` array, one record per line
+for a readable diff. `metadata` defines everything the tags refer to: size class boundaries,
+the room and size combinations the generator produces, conditions, floor claims and the feature
+vocabulary.
+
+```json
+{"id":"apt-001","type":"apartment","rooms":[1,1],"sizes":["xs"],"condition":"new_shell","floor":null,"storeys":null,"features":["open_plan","shelter","metro","quiet"],"uk":"...","en":"..."}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `id` | Stable identifier, `apt-001` ... `apt-230`, `house-001` ... `house-120`; never renumbered |
+| `type` | `apartment` or `house` |
+| `rooms` | `[min, max]` room counts the text fits; a studio counts as one room |
+| `sizes` | Size classes the text fits. Apartments: `xs` < 35 m², `s` 35-55, `m` 55-80, `l` 80-120, `xl` 120+. Houses: `s` < 120 m², `m` 120-200, `l` 200-300, `xl` 300+ |
+| `condition` | `new_shell` (new build without finish), `new_finished` (new build with finish), `renovated`, `lived_in`, `needs_repair` |
+| `floor` | Apartments only: `null` when the text says nothing about the floor, otherwise `low`, `high` or `top` |
+| `storeys` | Houses only: `[min, max]` storeys of the house the text fits |
+| `features` | What the text mentions, from the vocabulary in `metadata.features`: balcony, terrace, parking, garden, own boiler, backup power, shelter and so on |
+| `uk`, `en` | The text, 60-160 words in each language, one paragraph |
+
+A text fits a property when the type matches, the room count is inside `rooms`, the size class
+of the area is in `sizes`, the condition matches, and the floor or storeys do not contradict the
+tag. The features of the chosen text are then copied to the property, so the description and the
+characteristics block never disagree.
+
+### Coverage
+
+Every room and size combination the generator produces has at least ten matching texts before
+filtering by condition:
+
+| Apartment rooms | xs | s | m | l | xl |
+| --- | --- | --- | --- | --- | --- |
+| 1 | **55** | **70** | 43 | 10 | 0 |
+| 2 | 29 | **78** | **104** | 38 | 10 |
+| 3 | 24 | 36 | **91** | **77** | 14 |
+| 4 | 10 | 21 | 59 | **82** | **33** |
+| 5 | 0 | 0 | 10 | **33** | **40** |
+
+| House rooms | s | m | l | xl |
+| --- | --- | --- | --- | --- |
+| 2 | **26** | 10 | 0 | 0 |
+| 3 | **46** | **45** | 8 | 0 |
+| 4 | **32** | **61** | **33** | 0 |
+| 5 | 0 | **32** | **57** | **16** |
+| 6 | 0 | 14 | **38** | **26** |
+| 7 | 0 | 0 | 14 | **24** |
+
+Bold cells are the combinations the generator produces (`metadata.combinations`).
+
+### Checking
+
+```bash
+php bin/check-descriptions.php
+```
+
+The script fails when the file has fewer than 300 or more than 500 records, an id repeats, a
+field is missing or has a value outside the vocabulary, a text is shorter than 60 or longer than
+160 words, contains a digit, a currency, an area unit, a link, a district or neighbourhood name,
+the Dnipro or the city centre, when the English text has Cyrillic or the Ukrainian text has Latin
+words or Russian letters, when two texts in the same language are identical, start with the same
+four words or share more than 20% of their five-word phrases, or when a room and size combination
+has fewer than ten texts. It also prints the distribution by type, condition, length and feature
+and the coverage tables above. `--phrases` lists the most repeated four-word phrases, which helps
+to spot clichés after editing.
+
+### License
+
+The texts are part of this repository and are distributed under its license.
