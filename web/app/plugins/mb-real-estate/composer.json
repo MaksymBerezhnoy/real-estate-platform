@@ -1,0 +1,18 @@
+{
+  "name": "maksymberezhnoy/mb-real-estate",
+  "description": "Property catalog for WordPress: post type, taxonomies, search index, REST search and blocks",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "MB\\RealEstate\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}
