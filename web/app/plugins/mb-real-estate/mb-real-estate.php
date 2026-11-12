@@ -20,6 +20,7 @@ namespace MB\RealEstate;
 use MB\RealEstate\I18n\TextDomain;
 use MB\RealEstate\Meta\PropertyMeta;
 use MB\RealEstate\PostTypes\Property;
+use MB\RealEstate\Taxonomies\Agency;
 use MB\RealEstate\Taxonomies\Location;
 use MB\RealEstate\Taxonomies\PropertyType;
 
@@ -57,6 +58,7 @@ function boot(): void {
 		new TextDomain( dirname( plugin_basename( MBRE_PLUGIN_FILE ) ) . '/languages' ),
 		new PropertyType(),
 		new Location(),
+		new Agency(),
 		new Property(),
 		new PropertyMeta(),
 	);
@@ -73,6 +75,7 @@ add_action( 'plugins_loaded', __NAMESPACE__ . '\\boot' );
 function activate(): void {
 	( new PropertyType() )->register_taxonomy();
 	( new Location() )->register_taxonomy();
+	( new Agency() )->register_taxonomy();
 	( new Property() )->register_post_type();
 
 	flush_rewrite_rules();
@@ -88,6 +91,7 @@ function deactivate(): void {
 	unregister_post_type( Property::POST_TYPE );
 	unregister_taxonomy( PropertyType::TAXONOMY );
 	unregister_taxonomy( Location::TAXONOMY );
+	unregister_taxonomy( Agency::TAXONOMY );
 
 	flush_rewrite_rules();
 }
