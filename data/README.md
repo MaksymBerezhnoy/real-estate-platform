@@ -98,3 +98,92 @@ without attribution. Authors are credited here anyway.
 | Спиридон Варфаламеев | https://www.pexels.com/@239811708/ | 1 |
 
 The source page of every single photo is in the `page_url` field of the manifest.
+
+## OpenStreetMap geography
+
+The generator places every property on a real Kyiv street, inside the right district and never
+in the water. The reference geography for that lives in [osm/](osm/) and is small enough to be
+stored in Git:
+
+| File | Content |
+| --- | --- |
+| [osm/districts.geojson](osm/districts.geojson) | The 10 administrative districts of Kyiv |
+| [osm/water.geojson](osm/water.geojson) | The Dnipro with its bays and channels, lakes, reservoirs and ponds larger than 1 ha |
+| [osm/streets.geojson](osm/streets.geojson) | Named urban streets, one feature per street and district |
+
+All files are GeoJSON `FeatureCollection`s with coordinates in WGS 84, `[longitude, latitude]`,
+rounded to 5 decimal places (about 1 m). Every file has a top-level `metadata` object with the
+description, attribution, license, export date (`exported_at`, UTC) and the simplification
+tolerance in meters. Each feature is written on its own line, so a re-export gives a readable
+diff.
+
+### Updating
+
+```bash
+php bin/export-osm.php
+```
+
+The script queries the public [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API)
+(with fallback mirrors, a pause between requests and backoff when a server is busy), assembles
+the polygons, simplifies them, writes the three files and then runs the checks. Useful options:
+
+- `--cache=DIR` keeps the raw Overpass responses in `DIR` and reuses them on the next run, so the
+  processing can be tuned without querying the API again;
+- `--check` only checks the files already in `data/osm/`.
+
+The checks fail the run when there are not exactly 10 districts, a district has no name or no
+streets, districts overlap, a known street is in the wrong district, or a point in the middle of
+the Dnipro is not water.
+
+### Fields
+
+`districts.geojson`, geometry `MultiPolygon`:
+
+| Field | Meaning |
+| --- | --- |
+| `id`, `slug` | Stable Latin identifier, e.g. `shevchenkivskyi`; use it as the district key |
+| `name_uk`, `name_en` | Names from the OSM `name:uk` (or `name`) and `name:en` tags |
+| `osm_id` | Source relation, e.g. `relation/1755014` |
+| `area_km2` | Area of the simplified polygon |
+
+`water.geojson`, geometry `MultiPolygon`, sorted by area:
+
+| Field | Meaning |
+| --- | --- |
+| `osm_id` | Source way or relation |
+| `kind` | OSM `water` value (`river`, `lake`, `pond`, `reservoir`, `oxbow`, ...) or `river` / `reservoir` for older tagging |
+| `name_uk`, `name_en` | Names when OSM has them, otherwise empty |
+| `area_km2` | Area inside the city bounding box |
+
+The Dnipro polygons extend far beyond Kyiv in OSM, so all water is clipped to the bounding box of
+the city boundary.
+
+`streets.geojson`, geometry `MultiLineString`:
+
+| Field | Meaning |
+| --- | --- |
+| `district` | District slug |
+| `name_uk` | Ukrainian name from `name:uk` (or `name`), also the street key |
+| `name_en` | English name |
+| `name_en_source` | `osm` when the name comes from the `name:en` tag, `transliteration` when the script built it |
+| `highway` | The most important OSM class among the street's ways |
+
+Only these OSM classes are kept: `trunk`, `primary`, `secondary`, `tertiary`, `unclassified`,
+`residential`, `living_street`. Motorways, link roads, service roads, tracks, footways and
+pedestrian zones are left out. A street that crosses several districts appears once in each of
+them with only the part inside that district: the street's points are tested against the
+simplified district polygons, the same ones the generator uses.
+
+When OSM has no `name:en`, the English name is not translated by hand: the proper part of the
+name is transliterated by the official Ukrainian system (Cabinet of Ministers resolution No. 55
+of 2010) and the street type word is replaced with its usual English equivalent, so
+`вулиця Юрія Іллєнка` becomes `Yuriia Illienka Street`. Such names are marked with
+`name_en_source: transliteration`.
+
+### License
+
+The data is © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) and is
+available under the [Open Database License (ODbL) 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+The files in `data/osm/` are a derived database distributed under the ODbL, not under the GPL
+that covers the code of this repository. Any public map or page built from them must credit
+"© OpenStreetMap contributors".
