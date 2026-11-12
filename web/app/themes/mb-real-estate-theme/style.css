@@ -1,0 +1,20 @@
+/*
+Theme Name: MB Real Estate
+Theme URI: https://github.com/MaksymBerezhnoy/real-estate-platform
+Author: Maksym Berezhnoy
+Author URI: https://github.com/MaksymBerezhnoy
+Description: Block theme for a Kyiv real estate sales catalog. The design system (colors, fonts, spacing, radii) lives in theme.json; templates and template parts are built from core blocks.
+Requires at least: 6.7
+Tested up to: 7.1
+Requires PHP: 8.3
+Version: 0.1.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: mb-real-estate-theme
+Tags: full-site-editing, wide-blocks
+*/
+
+/*
+ * This file only carries the theme header. Block themes do not enqueue style.css
+ * automatically: all styles come from theme.json.
+ */
