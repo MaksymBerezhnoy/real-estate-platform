@@ -39,7 +39,7 @@ final class PluginTest extends TestCase {
 
 		$plugin->boot();
 
-		$this->assertSame( array( 'third', 'second', 'first' ), $this->registered );
+		$this->assertSame( array( 'first', 'second', 'third' ), $this->registered );
 	}
 
 	/**
