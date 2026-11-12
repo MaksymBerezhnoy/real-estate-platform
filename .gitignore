@@ -20,6 +20,7 @@ CLAUDE.local.md
 !/web/app/plugins/mb-real-estate/
 /web/app/mu-plugins/*/
 /web/app/themes/*
+!/web/app/themes/.gitkeep
 !/web/app/themes/mb-real-estate-theme/
 /web/app/upgrade/
 /web/app/uploads/*
@@ -41,6 +42,9 @@ build/
 /playwright-report/
 /.lighthouseci/
 .phpunit.result.cache
+.phpunit.cache
+/phpunit.xml
+wp-cli.local.yml
 .phpcs-cache
 *.log
 

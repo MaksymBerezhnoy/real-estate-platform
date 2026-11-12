@@ -66,7 +66,11 @@ Fixed before the first commit: the CPT key and meta keys are stored in the datab
 ## PHP
 
 - PHP 8.x, PSR-4 autoloading, WordPress Coding Standards (PHPCS) and PHPStan level 5.
-- Use `array()` syntax, not `[]`.
+- WPCS applies to our own code in `web/app/` (the plugin and the theme). There, follow it in
+  full, including `array()` instead of `[]`.
+- The Bedrock skeleton (`config/`, `web/index.php`, `web/wp-config.php`,
+  `web/app/mu-plugins/bedrock-autoloader.php`) keeps its upstream PSR-12 style and is not
+  checked by WPCS. Do not reformat it.
 - Use braces `{}`, never the alternative control syntax (`if: ... endif;`).
 - Place `add_action()` and `add_filter()` calls after the function definition. For class
   methods, register hooks in a dedicated method called from the plugin bootstrap.
