@@ -28,6 +28,19 @@ WordPress core, third-party plugins and themes are Composer dependencies: they a
 into `web/wp/` and `web/app/` and are not stored in Git. To add a plugin, run
 `ddev composer require wp-plugin/<slug>`.
 
+## Code quality
+
+Every pull request runs two required checks in GitHub Actions. The same commands run locally:
+
+```bash
+ddev composer lint      # PHPCS with WordPress Coding Standards
+ddev composer analyse   # PHPStan level 5 with the WordPress extension
+ddev composer check     # both
+```
+
+WordPress Coding Standards apply to the project's own plugin and theme in `web/app/`. The
+Bedrock skeleton keeps its upstream PSR-12 style and is not checked.
+
 ## License
 
 The code is licensed under [GPL-2.0-or-later](LICENSE). Third-party assets (photos,

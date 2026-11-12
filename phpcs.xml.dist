@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Real Estate Platform" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+	<description>WordPress Coding Standards for the project's own plugin and theme.</description>
+
+	<!--
+		Only our own code is checked. The Bedrock skeleton (config/, web/index.php,
+		web/wp-config.php, the mu-plugin autoloader) keeps its upstream PSR-12 style.
+	-->
+	<file>web/app/plugins/mb-real-estate</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="cache" value=".phpcs-cache"/>
+	<arg name="parallel" value="8"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<config name="minimum_wp_version" value="6.7"/>
+	<config name="testVersion" value="8.3-"/>
+
+	<rule ref="WordPress"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!--
+		Classes in src/ are autoloaded by PSR-4, so a file is named after its class
+		(Search/QueryBuilder.php). WPCS expects class-query-builder.php; the two rules
+		cannot both hold, and PSR-4 is the one the autoloader depends on.
+	-->
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>*/src/*</exclude-pattern>
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="mb-real-estate"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="mbre"/>
+				<element value="MB\RealEstate"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
