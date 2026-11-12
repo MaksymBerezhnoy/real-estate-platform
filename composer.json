@@ -64,6 +64,12 @@
     "check": [
       "@lint",
       "@analyse"
+    ],
+    "post-install-cmd": [
+      "@composer install --working-dir=web/app/plugins/mb-real-estate --no-interaction"
+    ],
+    "post-update-cmd": [
+      "@composer install --working-dir=web/app/plugins/mb-real-estate --no-interaction"
     ]
   },
   "scripts-descriptions": {
