@@ -26,7 +26,9 @@
     "preferred-install": "dist",
     "allow-plugins": {
       "composer/installers": true,
-      "roots/wordpress-core-installer": true
+      "roots/wordpress-core-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
     },
     "sort-packages": true
   },
@@ -45,5 +47,29 @@
       ]
     },
     "wordpress-install-dir": "web/wp"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.3",
+    "squizlabs/php_codesniffer": "^3.13",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "wp-coding-standards/wpcs": "^3.4"
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "lint:fix": "phpcbf",
+    "analyse": "phpstan analyse --memory-limit=1G --no-progress",
+    "check": [
+      "@lint",
+      "@analyse"
+    ]
+  },
+  "scripts-descriptions": {
+    "lint": "Check the plugin and theme against WordPress Coding Standards",
+    "lint:fix": "Fix coding standard violations that can be fixed automatically",
+    "analyse": "Run PHPStan static analysis",
+    "check": "Run every check that CI runs"
   }
 }
