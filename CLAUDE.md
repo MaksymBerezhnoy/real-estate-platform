@@ -66,7 +66,6 @@ Fixed before the first commit: the CPT key and meta keys are stored in the datab
 ## PHP
 
 - PHP 8.x, PSR-4 autoloading, WordPress Coding Standards (PHPCS) and PHPStan level 5.
-- Use `array()` syntax, not `[]`.
 - Use braces `{}`, never the alternative control syntax (`if: ... endif;`).
 - Place `add_action()` and `add_filter()` calls after the function definition. For class
   methods, register hooks in a dedicated method called from the plugin bootstrap.
