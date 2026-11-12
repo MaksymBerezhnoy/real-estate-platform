@@ -1,0 +1,55 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+auth.json
+
+# Private notes, never published
+/docs/private/
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Composer
+/vendor/
+
+# WordPress core and third-party code installed by Composer
+/web/wp/
+/web/.htaccess
+/web/app/plugins/*
+!/web/app/plugins/.gitkeep
+!/web/app/plugins/mb-real-estate/
+/web/app/mu-plugins/*/
+/web/app/themes/*
+!/web/app/themes/mb-real-estate-theme/
+/web/app/upgrade/
+/web/app/uploads/*
+!/web/app/uploads/.gitkeep
+/web/app/cache/
+/web/app/object-cache.php
+/web/app/languages/
+
+# Plugin and theme dependencies and build output
+/web/app/plugins/mb-real-estate/vendor/
+node_modules/
+build/
+
+# Photo set: downloaded from the manifest, not stored in Git
+/data/photos/
+
+# Tests and tooling output
+/test-results/
+/playwright-report/
+/.lighthouseci/
+.phpunit.result.cache
+.phpcs-cache
+*.log
+
+# DDEV local overrides
+/.ddev/*.local.*
+/.ddev/db_snapshots/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
