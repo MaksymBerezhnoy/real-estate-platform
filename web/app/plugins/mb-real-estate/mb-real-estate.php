@@ -18,6 +18,11 @@ declare( strict_types=1 );
 namespace MB\RealEstate;
 
 use MB\RealEstate\I18n\TextDomain;
+use MB\RealEstate\Meta\PropertyMeta;
+use MB\RealEstate\PostTypes\Property;
+use MB\RealEstate\Taxonomies\Agency;
+use MB\RealEstate\Taxonomies\Location;
+use MB\RealEstate\Taxonomies\PropertyType;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,8 +56,43 @@ require_once __DIR__ . '/vendor/autoload.php';
 function boot(): void {
 	$plugin = new Plugin(
 		new TextDomain( dirname( plugin_basename( MBRE_PLUGIN_FILE ) ) . '/languages' ),
+		new PropertyType(),
+		new Location(),
+		new Agency(),
+		new Property(),
+		new PropertyMeta(),
 	);
 
 	$plugin->boot();
 }
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\boot' );
+
+/**
+ * Registers the content types and rebuilds rewrite rules on activation.
+ *
+ * @return void
+ */
+function activate(): void {
+	( new PropertyType() )->register_taxonomy();
+	( new Location() )->register_taxonomy();
+	( new Agency() )->register_taxonomy();
+	( new Property() )->register_post_type();
+
+	flush_rewrite_rules();
+}
+register_activation_hook( MBRE_PLUGIN_FILE, __NAMESPACE__ . '\\activate' );
+
+/**
+ * Removes the plugin's rewrite rules on deactivation.
+ *
+ * @return void
+ */
+function deactivate(): void {
+	unregister_post_type( Property::POST_TYPE );
+	unregister_taxonomy( PropertyType::TAXONOMY );
+	unregister_taxonomy( Location::TAXONOMY );
+	unregister_taxonomy( Agency::TAXONOMY );
+
+	flush_rewrite_rules();
+}
+register_deactivation_hook( MBRE_PLUGIN_FILE, __NAMESPACE__ . '\\deactivate' );

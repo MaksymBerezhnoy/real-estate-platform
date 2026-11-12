@@ -20,10 +20,8 @@
 	<arg value="sp"/>
 
 	<config name="minimum_wp_version" value="6.7"/>
-	<config name="testVersion" value="8.3-"/>
 
 	<rule ref="WordPress"/>
-	<rule ref="PHPCompatibilityWP"/>
 
 	<!--
 		Classes in src/ are autoloaded by PSR-4, so a file is named after its class
