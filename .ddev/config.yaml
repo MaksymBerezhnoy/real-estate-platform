@@ -16,6 +16,12 @@ web_environment: []
 nodejs_version: "24"
 corepack_enable: false
 
+# The PHPUnit integration tests use their own database next to the site's "db" database.
+hooks:
+    post-start:
+        - exec: mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS db_tests; GRANT ALL ON db_tests.* TO 'db'@'%';"
+          service: db
+
 # Key features of DDEV's config.yaml:
 
 # name: <projectname> # Name of the project, automatically provides

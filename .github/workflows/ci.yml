@@ -47,3 +47,38 @@ jobs:
 
       - name: Run PHPStan
         run: composer analyse
+
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    services:
+      # Same major version as the DDEV database in .ddev/config.yaml.
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: db_tests
+          MARIADB_USER: db
+          MARIADB_PASSWORD: db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      WP_TESTS_DB_HOST: 127.0.0.1:3306
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run PHPUnit
+        run: composer test

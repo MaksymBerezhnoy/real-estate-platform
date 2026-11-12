@@ -4,8 +4,14 @@ parameters:
     level: 5
     paths:
         - web/app/plugins/mb-real-estate
+    # WP_UnitTestCase and the tests_*() helpers are not autoloaded: the test library is
+    # loaded by tests/bootstrap.php at run time, so PHPStan reads the same files directly.
+    scanDirectories:
+        - vendor/wp-phpunit/wp-phpunit/includes
+    # Excluded from analysis only: an analyseAndScan exclusion of */vendor/* would hide
+    # the test library from scanDirectories too.
     excludePaths:
-        analyseAndScan:
+        analyse:
             - '*/vendor/*'
             - '*/node_modules/*'
             - '*/build/*'

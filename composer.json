@@ -53,17 +53,29 @@
     "phpcompatibility/phpcompatibility-wp": "^2.1",
     "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.3",
+    "phpunit/phpunit": "^9.6",
     "squizlabs/php_codesniffer": "^3.13",
     "szepeviktor/phpstan-wordpress": "^2.0",
-    "wp-coding-standards/wpcs": "^3.4"
+    "wp-coding-standards/wpcs": "^3.4",
+    "wp-phpunit/wp-phpunit": "^7.1",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MB\\RealEstate\\Tests\\": "web/app/plugins/mb-real-estate/tests/"
+    }
   },
   "scripts": {
     "lint": "phpcs",
     "lint:fix": "phpcbf",
     "analyse": "phpstan analyse --memory-limit=1G --no-progress",
+    "test": "phpunit",
+    "test:unit": "phpunit --testsuite unit",
+    "test:integration": "phpunit --testsuite integration",
     "check": [
       "@lint",
-      "@analyse"
+      "@analyse",
+      "@test"
     ],
     "post-install-cmd": [
       "@composer install --working-dir=web/app/plugins/mb-real-estate --no-interaction"
@@ -76,6 +88,9 @@
     "lint": "Check the plugin and theme against WordPress Coding Standards",
     "lint:fix": "Fix coding standard violations that can be fixed automatically",
     "analyse": "Run PHPStan static analysis",
+    "test": "Run the unit and integration test suites",
+    "test:unit": "Run the unit tests, which do not load WordPress",
+    "test:integration": "Run the integration tests against WordPress and the test database",
     "check": "Run every check that CI runs"
   }
 }
