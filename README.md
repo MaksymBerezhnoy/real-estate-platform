@@ -30,16 +30,38 @@ into `web/wp/` and `web/app/` and are not stored in Git. To add a plugin, run
 
 ## Code quality
 
-Every pull request runs two required checks in GitHub Actions. The same commands run locally:
+Every pull request runs PHPCS, PHPStan and PHPUnit in GitHub Actions. The same commands run
+locally:
 
 ```bash
 ddev composer lint      # PHPCS with WordPress Coding Standards
 ddev composer analyse   # PHPStan level 5 with the WordPress extension
-ddev composer check     # both
+ddev composer test      # PHPUnit, see Tests below
+ddev composer check     # all three
 ```
 
 WordPress Coding Standards apply to the project's own plugin and theme in `web/app/`. The
 Bedrock skeleton keeps its upstream PSR-12 style and is not checked.
+
+## Tests
+
+PHPUnit tests live in `web/app/plugins/mb-real-estate/tests/` in two suites:
+
+- `unit`: plain PHP classes, WordPress is not loaded;
+- `integration`: `WP_UnitTestCase` tests on a real WordPress from `web/wp/` with the plugin
+  loaded, against a separate database.
+
+```bash
+ddev composer test               # both suites
+ddev composer test:unit          # unit suite only, no database
+ddev composer test:integration   # integration suite only
+```
+
+The integration suite uses the `db_tests` database, which `ddev start` creates next to the
+site's database. Every run reinstalls the WordPress tables in it, so no cleanup is needed, and
+the site's `.env` and database are never touched. Outside DDEV, point the tests at another
+database with `WP_TESTS_DB_NAME`, `WP_TESTS_DB_USER`, `WP_TESTS_DB_PASSWORD` and
+`WP_TESTS_DB_HOST`, as the `PHPUnit` job in GitHub Actions does.
 
 ## License
 

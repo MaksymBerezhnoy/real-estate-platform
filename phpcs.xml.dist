@@ -35,6 +35,16 @@
 		<exclude-pattern>*/tests/*</exclude-pattern>
 	</rule>
 
+	<!--
+		The test configuration defines the constants the WordPress test library reads
+		(ABSPATH, DB_NAME, WP_TESTS_DOMAIN, ...). Their names are the library's API, so they
+		cannot carry the plugin prefix.
+	-->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
+		<exclude-pattern>*/tests/bootstrap.php</exclude-pattern>
+		<exclude-pattern>*/tests/wp-tests-config.php</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
